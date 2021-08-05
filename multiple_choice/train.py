@@ -116,6 +116,9 @@ def main(args):
     targets = torch.tensor(targets)
     targets = targets.float().to(device)
 
+    print(input_ids.size())
+    print(targets.size())
+
     train_data = TensorDataset(input_ids, token_type_ids, attention_masks, targets)
 
     train_sampler = RandomSampler(train_data)
