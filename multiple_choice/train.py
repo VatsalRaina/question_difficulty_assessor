@@ -88,7 +88,17 @@ def main(args):
         if x=="D":
             return 3
     
-    targets = [0.0]*len(middle_data) + [5.0]*len(high_data) + [10.0]*len(college_data)
+    num_middle = 0
+    for item in middle_data:
+        num_middle += len(item["questions"])
+    num_high = 0
+    for item in high_data:
+        num_high += len(item["questions"])
+    num_college = 0
+    for item in college_data:
+        num_college += len(item["questions"])
+
+    targets = [0.0]*num_middle + [5.0]*num_high + [10.0]*num_college
 
     input_ids = []
     token_type_ids = []
