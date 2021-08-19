@@ -49,12 +49,6 @@ def main(args):
         f.write(' '.join(sys.argv) + '\n')
         f.write('--------------------------------\n')
 
-    # Set the seed value all over the place to make this reproducible.
-    seed_val = args.seed
-    random.seed(seed_val)
-    np.random.seed(seed_val)
-    torch.manual_seed(seed_val)
-    torch.cuda.manual_seed_all(seed_val)
     # Choose device
     device = get_default_device()
 
