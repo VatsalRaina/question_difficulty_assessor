@@ -20,7 +20,6 @@ MAXLEN = 512
 
 parser = argparse.ArgumentParser(description='Get all command line arguments.')
 parser.add_argument('--batch_size', type=int, default=24, help='Specify the training batch size')
-parser.add_argument('--seed', type=int, default=1, help='Specify the global random seed')
 parser.add_argument('--test_data_path', type=str, help='Load path of test data')
 parser.add_argument('--model_path', type=str, help='Load path of trained model')
 parser.add_argument('--predictions_save_path', type=str, help='Load path to which predictions will be saved')
