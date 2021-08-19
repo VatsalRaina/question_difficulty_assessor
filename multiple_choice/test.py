@@ -85,6 +85,7 @@ def main(args):
         num_college += len(item["questions"])
 
     targets = [0.0]*num_middle + [5.0]*num_high + [10.0]*num_college
+    targets = np.asarray(targets)
 
     input_ids = []
     token_type_ids = []
@@ -109,11 +110,8 @@ def main(args):
     token_type_ids = token_type_ids.long().to(device)
     attention_masks = torch.tensor(attention_masks)
     attention_masks = attention_masks.long().to(device)
-    targets = torch.tensor(targets)
-    targets = targets.float().to(device)
 
     print(input_ids.size())
-    print(targets.size())
 
     ds = TensorDataset(input_ids, token_type_ids, attention_masks)
     dl = DataLoader(ds, batch_size=args.batch_size, shuffle=False)
@@ -134,6 +132,7 @@ def main(args):
         preds += curr_preds.detach().cpu().numpy().tolist()
     preds = np.asarray(preds)
     np.save(args.predictions_save_path + "preds_all.npy", preds)
+    np.save(args.predictions_save_path + "targets_all.npy", targets)
 
 
 if __name__ == '__main__':
