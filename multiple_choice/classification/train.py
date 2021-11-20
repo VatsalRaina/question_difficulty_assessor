@@ -124,7 +124,7 @@ def main(args):
     attention_masks = torch.tensor(attention_masks)
     attention_masks = attention_masks.long().to(device)
     targets = torch.tensor(targets)
-    targets = targets.float().to(device)
+    targets = targets.long().to(device)
 
     print(input_ids.size())
     print(targets.size())
