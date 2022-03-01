@@ -22,7 +22,6 @@ parser = argparse.ArgumentParser(description='Get all command line arguments.')
 parser.add_argument('--batch_size', type=int, default=24, help='Specify the training batch size')
 parser.add_argument('--test_data_path', type=str, help='Load path of test data')
 parser.add_argument('--models_dir', type=str, help='Specify path to directory containing all trained complexity models')
-parser.add_argument('--predictions_save_path', type=str, help='Load path to which predictions will be saved')
 
 def format_time(elapsed):
     '''
