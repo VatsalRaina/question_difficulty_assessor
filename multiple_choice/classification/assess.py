@@ -89,7 +89,7 @@ def main(args):
     seeds = [1, 2, 3]
 
     for seed in seeds:
-        model_path = args.models_dir + "electra_seed" + str(seed) + ".pt"
+        model_path = args.models_dir + "seed" + str(seed) + "/electra_seed" + str(seed) + ".pt"
         model = torch.load(model_path, map_location=device)
         model.eval().to(device)
         models.append(model)
