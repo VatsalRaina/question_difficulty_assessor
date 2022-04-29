@@ -12,9 +12,12 @@ import random
 import time
 import datetime
 
-from transformers import ElectraTokenizer, ElectraForSequenceClassification
+from transformers import ElectraTokenizer, ElectraForMultipleChoice
+from keras.preprocessing.sequence import pad_sequences
+
 
 from scipy.special import softmax
+from scipy.stats import entropy
 
 MAXLEN = 512
 
@@ -61,21 +64,33 @@ def main(args):
 
     input_ids = []
     token_type_ids = []
-    attention_masks = []
 
-    for item in test_data:
-        context = item["article"]
-        questions = item["questions"]
-        for question in questions:
-            combo = question + " [SEP] " + context
-            input_encodings_dict = tokenizer(combo, truncation=True, max_length=MAXLEN, padding="max_length")
-            inp_ids = input_encodings_dict['input_ids']
-            inp_att_msk = input_encodings_dict['attention_mask']
+    for ex in test_data:
+        question, context, options = ex['question'], ex['context'], ex['options']
+        four_inp_ids = []
+        four_tok_type_ids = []
+        for opt in options:
+            combo = context + " [SEP] " + question + " " + opt
+            inp_ids = tokenizer.encode(combo)
+            if len(inp_ids)>512:
+                inp_ids = [inp_ids[0]] + inp_ids[-511:]
             tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
-            input_ids.append(inp_ids)
-            token_type_ids.append(tok_type_ids)
-            attention_masks.append(inp_att_msk)
+            four_inp_ids.append(inp_ids)
+            four_tok_type_ids.append(tok_type_ids)
+        four_inp_ids = pad_sequences(four_inp_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
+        four_tok_type_ids = pad_sequences(four_tok_type_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
+        input_ids.append(four_inp_ids)
+        token_type_ids.append(four_tok_type_ids)
 
+    # Create attention masks
+    attention_masks = []
+    for sen in input_ids:
+        sen_attention_masks = []
+        for opt in sen:
+            att_mask = [int(token_id > 0) for token_id in opt]
+            sen_attention_masks.append(att_mask)
+        attention_masks.append(sen_attention_masks)
+    # Convert to torch tensors
     input_ids = torch.tensor(input_ids)
     input_ids = input_ids.long().to(device)
     token_type_ids = torch.tensor(token_type_ids)
@@ -90,12 +105,12 @@ def main(args):
     seeds = [1, 2, 3]
 
     for seed in seeds:
-        model_path = args.models_dir + "seed" + str(seed) + "/electra_seed" + str(seed) + ".pt"
+        model_path = args.qa_models_dir + "seed" + str(seed) + "/electra_QA_MC_seed" + str(seed) + ".pt"
         model = torch.load(model_path, map_location=device)
         model.eval().to(device)
         models.append(model)
 
-    all_complexities = []
+    all_unanswerabilities = []
 
     count = 0
     for inp_id, tok_typ_id, att_msk in dl:
@@ -109,12 +124,12 @@ def main(args):
                 curr_preds.append( softmax(outputs[0].detach().cpu().numpy(), axis=-1) )
         curr_preds = np.asarray(curr_preds)
         curr_preds = np.mean(curr_preds, axis=0)
-        complexity = 0.0 * curr_preds[0] + 0.5 * curr_preds[1] + 1.0 * curr_preds[2]
-        all_complexities.append(complexity)
+        unanswerability = entropy(curr_preds)
+        all_unanswerabilities.append(unanswerability)
 
-    all_complexities = np.asarray(all_complexities)
-    with open('complexities.npy', 'wb') as f:
-        np.save(f, all_complexities)
+    all_unanswerabilities = np.asarray(all_unanswerabilities)
+    with open('unanswerabilities.npy', 'wb') as f:
+        np.save(f, all_unanswerabilities)
 
 
 if __name__ == '__main__':
