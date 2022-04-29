@@ -110,7 +110,8 @@ def main(args):
         model.eval().to(device)
         models.append(model)
 
-    all_unanswerabilities = []
+    
+    preds = []
 
     count = 0
     for inp_id, tok_typ_id, att_msk in dl:
@@ -124,6 +125,10 @@ def main(args):
                 curr_preds.append( softmax(outputs[0].detach().cpu().numpy(), axis=-1) )
         curr_preds = np.asarray(curr_preds)
         curr_preds = np.mean(curr_preds, axis=0)
+        preds += curr_preds.tolist()
+
+    all_unanswerabilities = []
+    for curr_preds in preds:
         unanswerability = entropy(curr_preds)
         all_unanswerabilities.append(unanswerability)
 
