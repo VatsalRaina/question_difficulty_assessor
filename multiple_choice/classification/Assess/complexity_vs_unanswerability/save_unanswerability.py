@@ -21,7 +21,7 @@ MAXLEN = 512
 parser = argparse.ArgumentParser(description='Get all command line arguments.')
 parser.add_argument('--batch_size', type=int, default=24, help='Specify the evaluation batch size')
 parser.add_argument('--gen_questions_path', type=str, help='Load path of test data')
-parser.add_argument('--complexity_models_dir', type=str, help='Specify path to directory containing all trained complexity models')
+parser.add_argument('--qa_models_dir', type=str, help='Specify path to directory containing all trained complexity models')
 
 
 def format_time(elapsed):
@@ -64,16 +64,17 @@ def main(args):
     attention_masks = []
 
     for item in test_data:
-        context = item["context"]
-        question = item["question"]
-        combo = question + " [SEP] " + context
-        input_encodings_dict = tokenizer(combo, truncation=True, max_length=MAXLEN, padding="max_length")
-        inp_ids = input_encodings_dict['input_ids']
-        inp_att_msk = input_encodings_dict['attention_mask']
-        tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
-        input_ids.append(inp_ids)
-        token_type_ids.append(tok_type_ids)
-        attention_masks.append(inp_att_msk)
+        context = item["article"]
+        questions = item["questions"]
+        for question in questions:
+            combo = question + " [SEP] " + context
+            input_encodings_dict = tokenizer(combo, truncation=True, max_length=MAXLEN, padding="max_length")
+            inp_ids = input_encodings_dict['input_ids']
+            inp_att_msk = input_encodings_dict['attention_mask']
+            tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
+            input_ids.append(inp_ids)
+            token_type_ids.append(tok_type_ids)
+            attention_masks.append(inp_att_msk)
 
     input_ids = torch.tensor(input_ids)
     input_ids = input_ids.long().to(device)
