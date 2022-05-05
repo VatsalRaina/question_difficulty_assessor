@@ -92,11 +92,11 @@ def main(args):
             sen_attention_masks.append(att_mask)
         attention_masks.append(sen_attention_masks)
     # Convert to torch tensors
-    input_ids = torch.tensor(input_ids)
+    input_ids = torch.tensor(np.asarray(input_ids))
     input_ids = input_ids.long().to(device)
-    token_type_ids = torch.tensor(token_type_ids)
+    token_type_ids = torch.tensor(np.asarray(token_type_ids))
     token_type_ids = token_type_ids.long().to(device)
-    attention_masks = torch.tensor(attention_masks)
+    attention_masks = torch.tensor(np.asarray(attention_masks))
     attention_masks = attention_masks.long().to(device)
 
     ds = TensorDataset(input_ids, token_type_ids, attention_masks)
@@ -111,9 +111,6 @@ def main(args):
         model.eval().to(device)
         models.append(model)
 
-    
-    preds = []
-
     count = 0
     for inp_id, tok_typ_id, att_msk in dl:
         print(count)
@@ -124,12 +121,12 @@ def main(args):
             for model in models:
                 outputs = model(input_ids=inp_id, attention_mask=att_msk, token_type_ids=tok_typ_id)
                 curr_preds.append( softmax(outputs[0].detach().cpu().numpy(), axis=-1) )
-            
-        curr_preds = np.transpose(np.asarray(curr_preds), axes=[0,1])
-        preds += curr_preds.tolist()
+        if count==1:
+            preds = np.asarray(curr_preds)
+        else:
+            preds = np.concatenate((preds, curr_preds), axis=1)
 
-    preds = np.transpose(np.asarray(preds), axes=[0,1])
-    uncs = ensemble_uncertainties_classification()
+    uncs = ensemble_uncertainties_classification(preds)
 
     for unc_key, curr_uncs in uncs:
         with open(unc_key+'.npy', 'wb') as f:
