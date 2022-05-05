@@ -128,7 +128,7 @@ def main(args):
 
     uncs = ensemble_uncertainties_classification(preds)
 
-    for unc_key, curr_uncs in uncs:
+    for unc_key, curr_uncs in uncs.items():
         with open(unc_key+'.npy', 'wb') as f:
             np.save(f, curr_uncs)
 
