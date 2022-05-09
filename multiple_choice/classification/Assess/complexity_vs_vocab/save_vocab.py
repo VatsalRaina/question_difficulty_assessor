@@ -59,11 +59,10 @@ def main(args):
     vocab_levels = []
     tot_contexts = len(all_contexts)
     for i, context in enumerate(all_contexts):
-        print("Context num", i+1, "of", tot_contexts)
         context = context.lower()
-        num_easy = 0
-        num_medium = 0
-        num_hard = 0
+        num_easy = 0.0
+        num_medium = 0.0
+        num_hard = 0.0
         # extract each word in context separately
         words = context.split()
         for word in words:
@@ -73,7 +72,8 @@ def main(args):
                 num_medium+=1
             elif word in hard_list:
                 num_hard+=1
-        vocab_level = (num_easy*0.0 + num_medium*0.5 + num_hard*1.0) / (num_easy+num_medium+num_hard)
+        vocab_level = (num_easy*0.0 + num_medium*0.5 + num_hard*1.0) / float(num_easy+num_medium+num_hard)
+        print("Context num", i+1, "of", tot_contexts, "Easy:", num_easy, "Medium:", num_medium, "Hard:", num_hard)
         vocab_levels.append(vocab_level)
 
     vocab_levels = np.asarray(vocab_levels)
