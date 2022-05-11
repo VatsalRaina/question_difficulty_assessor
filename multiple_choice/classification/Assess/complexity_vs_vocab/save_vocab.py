@@ -38,13 +38,13 @@ def main(args):
     file = minidom.parse(args.medium_vocab)
     vocab_words = file.getElementsByTagName('di')
     for word in vocab_words:
-        easy_list.append(word.attributes['id'].value)
+        medium_list.append(word.attributes['id'].value)
 
     hard_list = []
     file = minidom.parse(args.hard_vocab)
     vocab_words = file.getElementsByTagName('di')
     for word in vocab_words:
-        easy_list.append(word.attributes['id'].value)
+        hard_list.append(word.attributes['id'].value)
 
 
 
