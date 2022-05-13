@@ -121,15 +121,11 @@ def main(args):
     count = 0
     for inp_id, tok_typ_id, att_msk in dl:
         print(count)
-
+        count+=1
         embedding_matrix = model.electra.embeddings.word_embeddings
         b_inputs_embeds = torch.tensor(embedding_matrix(inp_id.to(device)), requires_grad=True)
-
-
-        count+=1
         inp_id, tok_typ_id, att_msk = inp_id.to(device), tok_typ_id.to(device), att_msk.to(device)
-        with torch.no_grad():
-            outputs = model(input_ids=inp_id, attention_mask=att_msk, token_type_ids=tok_typ_id)
+        outputs = model(input_ids=inp_id, attention_mask=att_msk, token_type_ids=tok_typ_id)
         curr_pred = torch.squeeze(outputs[0])
         curr_pred.backward()
         saliency_scores = torch.squeeze(torch.norm(b_inputs_embeds.grad.data.abs(), dim=-1)).detach().cpu().numpy()
