@@ -126,7 +126,7 @@ def main(args):
         b_inputs_embeds = torch.tensor(embedding_matrix(inp_id.to(device)), requires_grad=True)
         inp_id, tok_typ_id, att_msk = inp_id.to(device), tok_typ_id.to(device), att_msk.to(device)
         outputs = model(input_ids=inp_id, attention_mask=att_msk, token_type_ids=tok_typ_id)
-        curr_pred = torch.squeeze(outputs[0])
+        curr_pred = torch.sum(torch.squeeze(outputs[0]))
         curr_pred.backward()
         saliency_scores = torch.squeeze(torch.norm(b_inputs_embeds.grad.data.abs(), dim=-1)).detach().cpu().numpy()
 
