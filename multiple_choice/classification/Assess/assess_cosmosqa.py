@@ -110,10 +110,19 @@ def main(args):
         curr_preds = np.asarray(curr_preds)
         curr_preds = np.mean(curr_preds, axis=0)
         preds += curr_preds.tolist()
-    preds = np.asarray(preds)
-    preds_mean = np.mean(preds, axis=0)
-    complexity_score = 0.0 * preds_mean[0] + 0.5 * preds_mean[1] + 1.0 * preds_mean[2]
-    print("Complexity score:", complexity_score)
+    # preds = np.asarray(preds)
+    # preds_mean = np.mean(preds, axis=0)
+    # complexity_score = 0.0 * preds_mean[0] + 0.5 * preds_mean[1] + 1.0 * preds_mean[2]
+    # print("Complexity score:", complexity_score)
+
+    all_complexities = []
+    for curr_preds in preds:
+        complexity = 0.0 * curr_preds[0] + 0.5 * curr_preds[1] + 1.0 * curr_preds[2]
+        all_complexities.append(complexity)
+
+    all_complexities = np.asarray(all_complexities)
+    with open('complexities_cosmos.npy', 'wb') as f:
+        np.save(f, all_complexities)
 
 
 if __name__ == '__main__':

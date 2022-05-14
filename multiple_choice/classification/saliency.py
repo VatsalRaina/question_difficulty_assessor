@@ -122,6 +122,7 @@ def main(args):
     for inp_id, tok_typ_id, att_msk in dl:
         print(count)
         count+=1
+        model.zero_grad()
         embedding_matrix = model.electra.embeddings.word_embeddings
         b_inputs_embeds = torch.tensor(embedding_matrix(inp_id.to(device)), requires_grad=True)
         inp_id, tok_typ_id, att_msk = inp_id.to(device), tok_typ_id.to(device), att_msk.to(device)
