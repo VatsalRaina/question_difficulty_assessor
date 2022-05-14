@@ -126,8 +126,8 @@ def main(args):
         all_complexities.append(complexity)
 
     all_complexities = np.asarray(all_complexities)
-    with open('complexities.npy', 'wb') as f:
-        np.save(f, all_complexities)
+    with open('complexities_raceC.npy', 'wb') as f:
+        np.save(f, all_complexities[-len(college_data):])
 
 
 if __name__ == '__main__':
