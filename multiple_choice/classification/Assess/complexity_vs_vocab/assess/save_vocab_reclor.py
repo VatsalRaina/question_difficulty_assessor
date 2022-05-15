@@ -53,7 +53,7 @@ def main(args):
     all_words = []
 
     for item in test_data:
-        context = item["article"]
+        context = item["context"]
         question = item["question"]
         combo = question + " " + context
         all_words.append(combo)
