@@ -81,7 +81,7 @@ def main(args):
         vocab_levels.append(vocab_level)
 
     vocab_levels = np.asarray(vocab_levels)
-    with open('vocab_reclor.npy', 'wb') as f:
+    with open('vocab_cosmos.npy', 'wb') as f:
         np.save(f, vocab_levels)
 
 
