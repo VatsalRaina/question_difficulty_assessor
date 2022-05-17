@@ -179,7 +179,7 @@ def main(args):
         curr_pred.backward()
         saliency_scores = torch.squeeze(torch.norm(b_inputs_embeds.grad.data.abs(), dim=-1)).detach().cpu().numpy()
 
-        if count == 1:
+        if count == 2:
             break
 
     # get rid of the first [CLS] token
