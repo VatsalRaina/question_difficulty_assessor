@@ -117,17 +117,18 @@ def main(args):
         if x=="D":
             return 3
     
+    num_college = 0
+    for item in college_data:
+        num_college += len(item["questions"])
     num_middle = 0
     for item in middle_data:
         num_middle += len(item["questions"])
     num_high = 0
     for item in high_data:
         num_high += len(item["questions"])
-    num_college = 0
-    for item in college_data:
-        num_college += len(item["questions"])
 
-    targets = [0]*num_middle + [1]*num_high + [2]*num_college
+
+    targets = [2]*num_college + [0]*num_middle + [1]*num_high
     targets = np.asarray(targets)
 
     input_ids = []
@@ -181,8 +182,9 @@ def main(args):
         if count == 1:
             break
 
-    words = tokenizer.tokenize(all_combos[0])
+    words = tokenizer.tokenize(all_combos[count-1])
     saliency_scores = saliency_scores[:len(words)]
+    assert saliency_scores[len(words)] == 0.0
     print(len(words), saliency_scores)
 
     M = len(words)
