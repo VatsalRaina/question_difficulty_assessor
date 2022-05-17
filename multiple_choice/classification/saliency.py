@@ -198,10 +198,10 @@ def main(args):
     plt.clf()
 
     # Create textual heatmap
-    min_val = np.min(saliency_scores)
-    max_val = np.max(saliency_scores)
-    range_val = max_val-min_val
-    generate(words, 100*(saliency_scores-min_val)/range_val, "example.tex", 'red')
+    cleaned_words = []
+    for word in words:
+        cleaned_words.append(word.replace('#', ''))
+    generate(cleaned_words, saliency_scores, "example.tex", 'red', True)
 
 
 
