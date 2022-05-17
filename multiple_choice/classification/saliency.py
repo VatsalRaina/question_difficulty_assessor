@@ -101,7 +101,7 @@ def main(args):
         high_data = json.load(f)
     with open(args.test_data_path + "college.json") as f:
         college_data = json.load(f)
-    test_data = middle_data + high_data + college_data
+    test_data = college_data + middle_data + high_data 
 
     electra_base = "google/electra-base-discriminator"
     electra_large = "google/electra-large-discriminator"
@@ -182,15 +182,14 @@ def main(args):
         if count == 1:
             break
 
-    # get rid of the first and last token
-    saliency_scores = saliency_scores[1:-1]
+    # get rid of the first [CLS] token
+    saliency_scores = saliency_scores[1:]
     words = tokenizer.tokenize(all_combos[count-1])
     print(words)
     saliency_scores_all = saliency_scores
     print(saliency_scores_all)
     saliency_scores = saliency_scores[:len(words)]
     print(len(words), saliency_scores)
-    assert saliency_scores_all[len(words)] == 0.0
     
 
     M = len(words)
