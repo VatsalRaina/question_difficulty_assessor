@@ -143,7 +143,7 @@ def main(args):
     plt.barh(xx, list(saliency_scores)[::-1], color="blue")
     plt.yticks(xx, labels=np.flip(words), fontsize=40)
     plt.xticks(fontsize=40)
-    plt.ylabel('Option A')
+    plt.ylabel('Input')
     plt.ylim([-2, M+2])
     # plt.xlim([0.0, 0.17])
     plt.savefig('./saliency.png')
