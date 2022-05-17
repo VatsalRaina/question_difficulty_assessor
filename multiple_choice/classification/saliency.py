@@ -182,11 +182,16 @@ def main(args):
         if count == 1:
             break
 
+    # get rid of the first and last token
+    saliency_scores = saliency_scores[1:-1]
     words = tokenizer.tokenize(all_combos[count-1])
+    print(words)
     saliency_scores_all = saliency_scores
+    print(saliency_scores_all)
     saliency_scores = saliency_scores[:len(words)]
-    assert saliency_scores_all[len(words)] == 0.0
     print(len(words), saliency_scores)
+    assert saliency_scores_all[len(words)] == 0.0
+    
 
     M = len(words)
     xx = np.linspace(0, M, M)
