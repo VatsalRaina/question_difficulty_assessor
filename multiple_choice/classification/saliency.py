@@ -23,6 +23,50 @@ parser.add_argument('--test_data_path', type=str, help='Load path of test data')
 parser.add_argument('--model_path', type=str, help='Load path of trained model')
 parser.add_argument('--predictions_save_path', type=str, help='Load path to which predictions will be saved')
 
+
+latex_special_token = ["!@#$%^&*()"]
+
+def generate(text_list, attention_list, latex_file, color='red', rescale_value = False):
+	assert(len(text_list) == len(attention_list))
+	if rescale_value:
+		attention_list = rescale(attention_list)
+	word_num = len(text_list)
+	text_list = clean_word(text_list)
+	with open(latex_file,'w') as f:
+		f.write(r'''\documentclass[varwidth]{standalone}
+\special{papersize=210mm,297mm}
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{CJK}
+\usepackage{adjustbox}
+\tcbset{width=0.9\textwidth,boxrule=0pt,colback=red,arc=0pt,auto outer arc,left=0pt,right=0pt,boxsep=5pt}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}'''+'\n')
+		string = r'''{\setlength{\fboxsep}{0pt}\colorbox{white!0}{\parbox{0.9\textwidth}{'''+"\n"
+		for idx in range(word_num):
+			string += "\\colorbox{%s!%s}{"%(color, attention_list[idx])+"\\strut " + text_list[idx]+"} "
+		string += "\n}}}"
+		f.write(string+'\n')
+		f.write(r'''\end{CJK*}
+\end{document}''')
+
+def rescale(input_list):
+	the_array = np.asarray(input_list)
+	the_max = np.max(the_array)
+	the_min = np.min(the_array)
+	rescale = (the_array - the_min)/(the_max-the_min)*100
+	return rescale.tolist()
+
+
+def clean_word(word_list):
+	new_word_list = []
+	for word in word_list:
+		for latex_sensitive in ["\\", "%", "&", "^", "#", "_",  "{", "}"]:
+			if latex_sensitive in word:
+				word = word.replace(latex_sensitive, '\\'+latex_sensitive)
+		new_word_list.append(word)
+	return new_word_list
+
 def format_time(elapsed):
     '''
     Takes a time in seconds and returns a string hh:mm:ss
@@ -90,11 +134,14 @@ def main(args):
     token_type_ids = []
     attention_masks = []
 
+    all_combos = []
+
     for item in test_data:
         context = item["article"]
         questions = item["questions"]
         for question in questions:
             combo = question + " [SEP] " + context
+            all_combos.append(combo)
             input_encodings_dict = tokenizer(combo, truncation=True, max_length=MAXLEN, padding="max_length")
             inp_ids = input_encodings_dict['input_ids']
             inp_att_msk = input_encodings_dict['attention_mask']
@@ -125,7 +172,7 @@ def main(args):
         model.zero_grad()
         inp_id, tok_typ_id, att_msk = inp_id.to(device), tok_typ_id.to(device), att_msk.to(device)
         embedding_matrix = model.electra.embeddings.word_embeddings
-        b_inputs_embeds = torch.tensor(embedding_matrix(inp_id.to(device)), requires_grad=True)
+        b_inputs_embeds = torch.tensor(embedding_matrix(inp_id), requires_grad=True)
         outputs = model(inputs_embeds=b_inputs_embeds, attention_mask=att_msk, token_type_ids=tok_typ_id)
         curr_pred = torch.sum(torch.squeeze(outputs[0]))
         curr_pred.backward()
@@ -134,7 +181,7 @@ def main(args):
         if count == 1:
             break
 
-    words = tokenizer.tokenize(inp_id)
+    words = tokenizer.tokenize(all_combos[0])
     print(len(words), saliency_scores)
 
     M = len(words)
@@ -148,6 +195,12 @@ def main(args):
     # plt.xlim([0.0, 0.17])
     plt.savefig('./saliency.png')
     plt.clf()
+
+    # Create textual heatmap
+    min_val = np.min(saliency_scores)
+    max_val = np.max(saliency_scores)
+    range_val = max_val-min_val
+    generate(words, 100*(saliency_scores-min_val)/range_val, "example.tex", 'red')
 
 
 
