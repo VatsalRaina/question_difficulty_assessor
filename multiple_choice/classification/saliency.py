@@ -183,8 +183,9 @@ def main(args):
             break
 
     words = tokenizer.tokenize(all_combos[count-1])
+    saliency_scores_all = saliency_scores
     saliency_scores = saliency_scores[:len(words)]
-    assert saliency_scores[len(words)] == 0.0
+    assert saliency_scores_all[len(words)] == 0.0
     print(len(words), saliency_scores)
 
     M = len(words)
