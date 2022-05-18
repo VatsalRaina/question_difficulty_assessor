@@ -171,6 +171,8 @@ def main(args):
     for inp_id, tok_typ_id, att_msk in dl:
         print(count)
         count+=1
+        if count < 100:
+            continue
         model.zero_grad()
         inp_id, tok_typ_id, att_msk = inp_id.to(device), tok_typ_id.to(device), att_msk.to(device)
         embedding_matrix = model.electra.embeddings.word_embeddings
@@ -180,7 +182,7 @@ def main(args):
         curr_pred.backward()
         saliency_scores = torch.squeeze(torch.norm(b_inputs_embeds.grad.data.abs(), dim=-1)).detach().cpu().numpy()
 
-        if count == 2:
+        if count == 100:
             break
 
     # get rid of the first [CLS] token
