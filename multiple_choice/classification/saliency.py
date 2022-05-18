@@ -187,6 +187,8 @@ def main(args):
     # get rid of the first [CLS] token
     saliency_scores = saliency_scores[1:]
     words = tokenizer.tokenize(all_combos[count-1])
+    if len(words) > (MAXLEN - 2):
+        words = words[:MAXLEN-2]
     print(words)
     saliency_scores_all = saliency_scores
     print(saliency_scores_all)
