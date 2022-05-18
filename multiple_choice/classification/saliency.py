@@ -42,6 +42,7 @@ def generate(text_list, attention_list, latex_file, color='red', rescale_value =
 \tcbset{width=0.9\textwidth,boxrule=0pt,colback=red,arc=0pt,auto outer arc,left=0pt,right=0pt,boxsep=5pt}
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}'''+'\n')
+        \tiny
 		string = r'''{\setlength{\fboxsep}{0pt}\colorbox{white!0}{\parbox{0.9\textwidth}{'''+"\n"
 		for idx in range(word_num):
 			string += "\\colorbox{%s!%s}{"%(color, attention_list[idx])+"\\strut " + text_list[idx]+"} "
