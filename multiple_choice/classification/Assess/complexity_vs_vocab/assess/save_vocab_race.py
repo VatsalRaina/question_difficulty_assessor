@@ -85,9 +85,9 @@ def main(args):
 
     vocab_levels = np.asarray(vocab_levels)
     with open('vocab_raceM.npy', 'wb') as f:
-        np.save(f, vocab_levels[:len(middle_data)])
+        np.save(f, vocab_levels[:1436])
     with open('vocab_raceH.npy', 'wb') as f:
-        np.save(f, vocab_levels[len(middle_data):])
+        np.save(f, vocab_levels[1436:])
 
 
 if __name__ == '__main__':

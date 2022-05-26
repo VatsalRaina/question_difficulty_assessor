@@ -53,7 +53,8 @@ def main(args):
         high_data = json.load(f)
     with open(args.test_data_path + "college.json") as f:
         college_data = json.load(f)
-    test_data = middle_data + high_data + college_data
+    # test_data = middle_data + high_data + college_data
+    test_data = college_data
 
     all_words = []
 
@@ -87,7 +88,7 @@ def main(args):
 
     vocab_levels = np.asarray(vocab_levels)
     with open('vocab_raceC.npy', 'wb') as f:
-        np.save(f, vocab_levels[-len(college_data):])
+        np.save(f, vocab_levels)
 
 
 if __name__ == '__main__':
