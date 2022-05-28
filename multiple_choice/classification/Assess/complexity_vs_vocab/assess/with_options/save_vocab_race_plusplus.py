@@ -67,6 +67,7 @@ def main(args):
             combo = question + " " + context
             for opt in opts:
                 combo = combo + " " + opt
+            all_words.append(combo)
 
 
     vocab_levels = []
