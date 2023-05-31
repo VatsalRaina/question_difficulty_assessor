@@ -47,7 +47,7 @@ def main(args):
         'dale_chall': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
         'ari': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
         'linsear_write': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
-        'smog': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
+        # 'smog': {'b1':[], 'b2':[], 'c1':[], 'c2':[]}, # Requires minimum 30 sentences.
         'spache': {'b1':[], 'b2':[], 'c1':[], 'c2':[]}
         }
     for grade, text in zip(grades, all_words):
@@ -60,7 +60,7 @@ def main(args):
         all_scores['dale_chall'][grade].append(r.dale_chall().score)
         all_scores['ari'][grade].append(r.ari().score)
         all_scores['linsear_write'][grade].append(r.linsear_write().score)
-        all_scores['smog'][grade].append(r.smog().score)
+        # all_scores['smog'][grade].append(r.smog().score)
         all_scores['spache'][grade].append(r.spache().score)
 
     for measure in all_scores.keys():
