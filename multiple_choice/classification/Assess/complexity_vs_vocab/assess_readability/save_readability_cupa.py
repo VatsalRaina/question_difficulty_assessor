@@ -68,7 +68,7 @@ def main(args):
         print("Measure:", measure)
         for grade in all_scores[measure].keys():
             curr_scores = np.asarray(all_scores[measure][grade])
-            print(np.mean(curr_scores), np.std(curr_scores))
+            print(grade, np.mean(curr_scores), np.std(curr_scores))
 
 
 
