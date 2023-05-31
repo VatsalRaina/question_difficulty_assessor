@@ -40,7 +40,7 @@ def main(args):
 
 
     all_scores = {
-        'flesh_kincaid': {'b1':[], 'b2':[], 'c1':[], 'c2':[]}, 
+        'flesch_kincaid': {'b1':[], 'b2':[], 'c1':[], 'c2':[]}, 
         'flesch': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
         'gunning_fog': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
         'coleman_liau': {'b1':[], 'b2':[], 'c1':[], 'c2':[]},
