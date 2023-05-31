@@ -53,8 +53,8 @@ def main(args):
     for grade, text in zip(grades, all_words):
         text = text.lower()
         r = Readability(text)
-        all_scores['flesh_kincaid'][grade].append(r.flesh_kincaid().score)
-        all_scores['flesh'][grade].append(r.flesh().score)
+        all_scores['flesch_kincaid'][grade].append(r.flesch_kincaid().score)
+        all_scores['flesch'][grade].append(r.flesh().score)
         all_scores['gunning_fog'][grade].append(r.gunning_fog().score)
         all_scores['coleman_liau'][grade].append(r.coleman_liau().score)
         all_scores['dale_chall'][grade].append(r.dale_chall().score)
